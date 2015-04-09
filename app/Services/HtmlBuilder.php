@@ -155,7 +155,6 @@ class HtmlBuilder extends \Illuminate\Html\HtmlBuilder{
 	 * @return string
 	 */
 	public function table($fields = array(), $data = array(), $show = array(), $info){
-
 		if(count($data) > 0){
 			$show = array_merge(array('Edit' => false, 'Delete' => false, 'View' => false, 'Pagination' => 0), $show);
 
@@ -174,8 +173,13 @@ class HtmlBuilder extends \Illuminate\Html\HtmlBuilder{
 
 			$table = '<table>';
 			$table .='<thead><tr>';
-			foreach ($fields as $field)
+			foreach ($fields as $key => $field)
 			{
+				if(is_array($field)){
+					$array_key = array_keys($field)[0];
+					$fields[$key] = $field[$array_key];
+					$field = $array_key;
+				}
 				$table .= '<th>' . str_replace('_',' ', Str::title($field)) . '</th>';
 			}
 			if ($show['Edit'] || $show['Delete'] || $show['View']){

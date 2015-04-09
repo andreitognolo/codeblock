@@ -64,6 +64,20 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		return $this->getKey();
 	}
 
+	public function getrolenameAttribute()
+	{
+		return $this->roles->name;
+	}
+
+	public function getisactiveAttribute(){
+		if($this->active == 1){
+			return 'yes';
+		}
+		return false;
+	}
+
+	protected $appends = array('rolename', 'isactive');
+
 	/**
 	 * Get the password for the user.
 	 *
