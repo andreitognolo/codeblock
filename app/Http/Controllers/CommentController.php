@@ -35,6 +35,7 @@ class CommentController extends Controller {
 
 	/**
 	 * Visar index vyn för kommentarerna
+	 * @permission view_comments
 	 * @return objekt     objekt som innehåller allt som behövs i vyn
 	 */
 	public function index()
@@ -82,25 +83,36 @@ class CommentController extends Controller {
 
 	/**
 	 * vissar vyn för att uppdatera en kommentar.
+	 * @permission edit_comments:optional
 	 * @param  int $id id för kommentaren som skall uppdateras
 	 * @return object     med värden dit användaren skall skickas.
 	 */
 	public function edit($id){
 		$comment = $this->comment->get($id);
-		return View::make('comment.edit')->with('title', 'Edit comments')->with('comment', $comment);
+		if(Auth::check() && Auth::user()->id == $comment->user_id || Auth::user()->hasPermission($this->getPermission(), false)) {
+			return View::make('comment.edit')->with('title', 'Edit comments')->with('comment', $comment);
+		}else{
+			return Redirect::back()->with('error', 'You do not have permission to edit that comment.');
+		}
 	}
 
 	/**
 	 * Ta bort en kommentar
+	 * @permission delete_comments:optional
 	 * @param  int $id id för kommentaren som skall tas bort.
 	 * @return object     med värden dit användaren skall skickas.
 	 */
 	public function delete($id){
-		if($this->comment->delete($id)){
-			return Redirect::back();
+		$comment = $this->comment->get($id);
+		if(Auth::check() && Auth::user()->id == $comment->user_id || Auth::user()->hasPermission($this->getPermission(), false)) {
+			if($this->comment->delete($id)) {
+				return Redirect::back();
+			}
+		}else{
+			return Redirect::back()->with('error', 'You do not have permission to delete that comment.');
 		}
 
-		return Redirect::back();
+		return Redirect::back()->with('error', 'We could not delete that comment.');
 	}
 
 }
