@@ -68,6 +68,12 @@ Route::group(['middleware' => 'auth'], function() {
 	Route::post('categories/store/{id?}', 'CategoryController@createOrUpdate');
 	Route::get('categories/{id?}', 'CategoryController@index');
 
+
+	Route::get('news/delete/{id}', 'ArticleController@delete');
+	Route::post('news/store/', 'ArticleController@create');
+	Route::post('news/store/{id}', 'ArticleController@update');
+	Route::get('news/{id?}', 'ArticleController@index');
+
 	Route::get('posts', 'PostController@index');
 	Route::get('comments/', 'CommentController@index');
 
@@ -119,6 +125,7 @@ Route::group(['prefix' => 'api', 'middleware' => 'api'],function(){
 	Route::get('forums/{id?}', 'ApiController@forums');
 	Route::get('topics/{id?}', 'ApiController@topics');
 	Route::post('auth', 'ApiController@Auth');
+	Route::get('jwt', 'ApiController@getJwt');
 	Route::post('auth/register', 'ApiController@createOrUpdateUser');
 	Route::post('auth/forgot', 'ApiController@forgotPassword');
 
